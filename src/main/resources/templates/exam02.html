@@ -1,10 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>WebSocket 요청</title>
 </head>
 <body>
-$END$
+<h1>Flask WebSocket으로 메시지 전송</h1>
+
+<form action="/exam02" method="post">
+    <label>Type: <input type="text" name="type" value="대화" required></label><br><br>
+    <label>Message: <input type="text" name="message" value="간단한아침" required></label><br><br>
+    <button type="submit">보내기</button>
+</form>
+
+<hr>
+
+<div th:if="${response}">
+    <h2>응답 결과:</h2>
+    <pre th:text="${response}"></pre>
+</div>
+<div th:if="${response2}">
+    <h2>응답 결과2:</h2>
+    <pre th:text="${rawJson}"></pre>
+</div>
+
+<div th:if="${error}">
+    <h2 style="color:red;">에러 발생:</h2>
+    <p th:text="${error}"></p>
+</div>
+
 </body>
 </html>

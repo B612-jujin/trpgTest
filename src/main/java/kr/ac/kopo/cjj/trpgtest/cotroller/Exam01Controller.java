@@ -23,7 +23,7 @@ public class Exam01Controller {
 
     @PostMapping("/exam01")
     public String handleSubmit(@RequestParam String type,
-                               @RequestParam String prompt,
+                               @RequestParam(required = false) String prompt,
                                @RequestParam(required = false) String negative_prompt,
                                @RequestParam(required = false) Integer width,
                                @RequestParam(required = false) Integer height,
@@ -33,7 +33,7 @@ public class Exam01Controller {
                                @RequestParam(required = false) Long seed,
                                Model model) {
         try {
-            URI uri = new URI("ws://192.168.24.189:8000/ws");
+            URI uri = new URI("ws://192.168.24.189:8001/ws");
 
             Map<String, Object> data = new HashMap<>();
             data.put("type", type);
@@ -53,11 +53,21 @@ public class Exam01Controller {
             FlaskWebSocketClient client = new FlaskWebSocketClient(uri, data);
             client.connect();
 
-            String rawJson = client.getResponseFuture().get(10, TimeUnit.SECONDS); // 시간 여유 ↑
-
+            String rawJson = client.getResponseFuture().get(400, TimeUnit.SECONDS); // 시간 여유 ↑
+            // JSON 파싱 및 이미지 추출
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(rawJson);
+
+            // ✅ "image" 필드에서 base64 추출
+            String imageBase64 = root.path("image").asText(null);
+            String promptUsed = root.path("prompt").asText(null);
+
+            if (imageBase64 != null && !imageBase64.isEmpty()) {
+                model.addAttribute("image", imageBase64);
+            }
+            model.addAttribute("promptUsed", promptUsed);
             model.addAttribute("response", root.toPrettyString());
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,3 +77,4 @@ public class Exam01Controller {
         return "exam01";
     }
 }
+

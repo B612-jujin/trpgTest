@@ -1,10 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>이미지 생성 요청</title>
 </head>
 <body>
-$END$
+<h1>Flask WebSocket 이미지 생성 요청</h1>
+
+<form action="/exam01" method="post">
+    <label>Type: <input type="text" name="type" value="generate_image" required></label><br><br>
+    <label>Prompt: <input type="text" name="prompt" value="beautiful landscape with mountains and lake" required></label><br><br>
+    <label>Negative Prompt: <input type="text" name="negative_prompt" value="ugly, blurry, poor quality"></label><br><br>
+    <label>Width: <input type="number" name="width" value="768"></label><br><br>
+    <label>Height: <input type="number" name="height" value="768"></label><br><br>
+    <label>Steps: <input type="number" name="steps" value="30"></label><br><br>
+    <label>CFG Scale: <input type="number" step="0.1" name="cfg_scale" value="7.5"></label><br><br>
+    <label>Sampler Name: <input type="text" name="sampler_name" value="DPM++ 2M Karras"></label><br><br>
+    <label>Seed: <input type="number" name="seed" value="12345"></label><br><br>
+
+    <button type="submit">보내기</button>
+</form>
+
+<hr>
+
+<div th:if="${response}">
+    <h2>응답 결과:</h2>
+    <pre th:text="${response}"></pre>
+    <div th:if="${image}">
+        <h2>생성된 이미지:</h2>
+        <p><strong>사용된 프롬프트:</strong> <span th:text="${promptUsed}"></span></p>
+        <img th:src="'data:image/png;base64,' + ${image}" alt="Generated Image"
+             style="max-width: 600px; border: 1px solid #ccc; margin-top: 10px;">
+    </div>
+
+    <div th:if="${response}">
+        <h2>전체 응답(JSON):</h2>
+        <pre th:text="${response}"></pre>
+    </div>
+</div>
+
+<div th:if="${error}">
+    <h2 style="color:red;">에러 발생:</h2>
+    <p th:text="${error}"></p>
+</div>
+
 </body>
 </html>
