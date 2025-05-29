@@ -1,5 +1,8 @@
 package kr.ac.kopo.cjj.trpgtest.cotroller;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ac.kopo.cjj.trpgtest.FlaskWebSocketClient;
@@ -15,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 @Controller
 public class Exam02Controller {
+    // 로그를 위한 Logger 객체 생성
+    private static final Logger logger = LoggerFactory.getLogger(Exam02Controller.class);
 
     @GetMapping("/exam02")
     public String showForm() {
@@ -32,11 +37,15 @@ public class Exam02Controller {
             data.put("type", type);
             data.put("message", message);
 
+            logger.debug("WebSocket 연결을 시도합니다. URI: {}", uri);
+
             FlaskWebSocketClient2 client = new FlaskWebSocketClient2(uri, data);
             client.connectBlocking(); // connect() 대신
 
             String rawJson = client.getResponseFuture().get(50, TimeUnit.SECONDS);
             System.out.println("Flask 응답 JSON: " + rawJson);
+            logger.info("Flask 응답 JSON: {}", rawJson);
+
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(rawJson);
             String aiResponse = root.path("response").asText();
