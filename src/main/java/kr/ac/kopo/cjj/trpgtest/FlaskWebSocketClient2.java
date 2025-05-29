@@ -35,7 +35,24 @@ public class FlaskWebSocketClient2 extends WebSocketClient {
         }
     }
 
+    private StreamController streamController; // 생성자 또는 setter로 주입
+
     @Override
+    public void onMessage(String message) {
+        streamController.sendToClient(message); // 브라우저로 실시간 전송
+
+        try {
+            Map response = objectMapper.readValue(message, Map.class);
+            boolean isDone = response.containsKey("done") && Boolean.TRUE.equals(response.get("done"));
+            if (isDone) {
+                responseFuture.complete(message); // 최종 메시지로 완료
+            }
+        } catch (Exception e) {
+            responseFuture.completeExceptionally(e);
+        }
+    }
+
+/*    @Override
     public void onMessage(String message) {
         try {
             Map response = objectMapper.readValue(message, Map.class);
@@ -56,7 +73,7 @@ public class FlaskWebSocketClient2 extends WebSocketClient {
             System.out.println("Invalid JSON received FL: " + message);
             responseFuture.completeExceptionally(e);
         }
-    }
+    }*/
 
 
     @Override

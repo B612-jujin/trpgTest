@@ -8,8 +8,8 @@
 <h1>Flask WebSocket으로 메시지 전송</h1>
 
 <form action="/exam02" method="post">
-    <label>Type: <input type="text" name="type" value="대화" required></label><br><br>
-    <label>Message: <input type="text" name="message" value="간단한아침" required></label><br><br>
+    <label>Type: <input type="text" name="type" required></label><br><br>
+    <label>Message: <input type="text" name="message" required></label><br><br>
     <button type="submit">보내기</button>
 </form>
 
@@ -19,9 +19,20 @@
     <h2>응답 결과:</h2>
     <pre th:text="${response}"></pre>
 </div>
-<div th:if="${rawJson}">
-    <h2>응답 결과2:</h2>
-    <pre th:text="${rawJson}"></pre>
+
+    <script>
+        const eventSource = new EventSource('/stream');
+
+        eventSource.onmessage = function(event) {
+            const output = document.getElementById("output");
+            const p = document.createElement("p");
+            p.innerText = event.data;
+            output.appendChild(p);
+        };
+    </script>
+
+<div id="output">
+    <!-- 실시간 메시지가 여기에 쌓임 -->
 </div>
 
 <div th:if="${error}">
