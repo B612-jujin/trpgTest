@@ -13,11 +13,10 @@ public class StreamController {
 
     @GetMapping("/stream")
     public SseEmitter stream() {
-        emitter = new SseEmitter(0L); // 타임아웃 없음
-        return emitter;
+        this.emitter = new SseEmitter(0L); // 타임아웃 없음
+        return this.emitter;
     }
 
-    // FlaskWebSocketClient2에서 이 메서드를 통해 메시지를 브라우저로 보냄
     public void sendToClient(String message) {
         if (emitter != null) {
             try {

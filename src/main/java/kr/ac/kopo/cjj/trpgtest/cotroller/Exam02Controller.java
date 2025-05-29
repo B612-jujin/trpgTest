@@ -1,12 +1,14 @@
 package kr.ac.kopo.cjj.trpgtest.cotroller;
 
 
+import kr.ac.kopo.cjj.trpgtest.StreamController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ac.kopo.cjj.trpgtest.FlaskWebSocketClient;
 import kr.ac.kopo.cjj.trpgtest.FlaskWebSocketClient2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +18,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+
 @Controller
 public class Exam02Controller {
+    @Autowired
+    private StreamController streamController;
+
     // 로그를 위한 Logger 객체 생성
     private static final Logger logger = LoggerFactory.getLogger(Exam02Controller.class);
 
@@ -39,7 +45,9 @@ public class Exam02Controller {
 
             logger.debug("WebSocket 연결을 시도합니다. URI: {}", uri);
 
-            FlaskWebSocketClient2 client = new FlaskWebSocketClient2(uri, data);
+            FlaskWebSocketClient2 client = new FlaskWebSocketClient2(uri, data, streamController);
+            client.connectBlocking();
+
             client.connectBlocking(); // connect() 대신
 
             String rawJson = client.getResponseFuture().get(50, TimeUnit.SECONDS);
@@ -61,4 +69,5 @@ public class Exam02Controller {
 
         return "exam02"; // 다시 폼 페이지로
     }
+
 }

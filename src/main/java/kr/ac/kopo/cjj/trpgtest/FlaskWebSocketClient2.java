@@ -13,11 +13,14 @@ public class FlaskWebSocketClient2 extends WebSocketClient {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final CompletableFuture<String> responseFuture = new CompletableFuture<>();
     private final Map<String, Object> sendData;
+    private StreamController streamController; // 생성자 또는 setter로 주입
 
-    public FlaskWebSocketClient2(URI serverUri, Map<String, Object> sendData) {
+    public FlaskWebSocketClient2(URI serverUri, Map<String, Object> sendData, StreamController streamController) {
         super(serverUri);
         this.sendData = sendData;
+        this.streamController = streamController;
     }
+
 
     public CompletableFuture<String> getResponseFuture() {
         return responseFuture;
@@ -35,7 +38,7 @@ public class FlaskWebSocketClient2 extends WebSocketClient {
         }
     }
 
-    private StreamController streamController; // 생성자 또는 setter로 주입
+
 
     @Override
     public void onMessage(String message) {
