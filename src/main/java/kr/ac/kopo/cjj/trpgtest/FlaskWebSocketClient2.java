@@ -40,11 +40,24 @@ public class FlaskWebSocketClient2 extends WebSocketClient {
         try {
             Map response = objectMapper.readValue(message, Map.class);
             System.out.println("Received JSON FL: " + response);
+
+            // "done": true가 있는 경우에만 future 완료
+            Object doneObj = response.get("done");
+            boolean isDone = doneObj instanceof Boolean && (Boolean) doneObj;
+
+            if (isDone) {
+                responseFuture.complete(message); // 최종 결과만 전달
+            } else {
+                // 중간 응답은 로깅만 하거나 별도 처리 가능
+                System.out.println("중간 응답 수신 (보류): " + message);
+            }
+
         } catch (Exception e) {
             System.out.println("Invalid JSON received FL: " + message);
+            responseFuture.completeExceptionally(e);
         }
-        responseFuture.complete(message);
     }
+
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
