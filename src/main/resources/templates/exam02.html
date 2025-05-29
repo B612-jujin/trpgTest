@@ -3,6 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>WebSocket 요청</title>
+    <style>
+        #output {
+            border: 1px solid #ccc;
+            padding: 1em;
+            width: 600px;
+            min-height: 100px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
 </head>
 <body>
 <h1>Flask WebSocket으로 메시지 전송</h1>
@@ -20,25 +30,33 @@
     <pre th:text="${response}"></pre>
 </div>
 
-    <script>
-        const eventSource = new EventSource('/stream');
-
-        eventSource.onmessage = function(event) {
-            const output = document.getElementById("output");
-            const p = document.createElement("p");
-            p.innerText = event.data;
-            output.appendChild(p);
-        };
-    </script>
-
-<div id="output">
-    <!-- 실시간 메시지가 여기에 쌓임 -->
-</div>
+<h2>실시간 출력:</h2>
+<div id="output"></div>
 
 <div th:if="${error}">
     <h2 style="color:red;">에러 발생:</h2>
     <p th:text="${error}"></p>
 </div>
+
+<script>
+    const eventSource = new EventSource('/stream');
+    const outputEl = document.getElementById("output");
+
+    eventSource.onmessage = function(event) {
+        try {
+            const data = JSON.parse(event.data);
+
+            // response_so_far가 있으면 전체 메시지를 덮어씀
+            if (data.response_so_far) {
+                outputEl.textContent = data.response_so_far;
+            }
+
+        } catch (e) {
+            console.error("Invalid JSON from server:", event.data);
+        }
+    };
+</script>
+
 
 </body>
 </html>
