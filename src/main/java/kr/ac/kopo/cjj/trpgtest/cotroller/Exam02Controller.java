@@ -26,7 +26,7 @@ public class Exam02Controller {
                                @RequestParam String message,
                                Model model) {
         try {
-            URI uri = new URI("ws://192.168.24.189:8000/ws");
+            URI uri = new URI("ws://192.168.26.165:8000/ws");
 
             Map<String, Object> data = new HashMap<>();
             data.put("type", type);
