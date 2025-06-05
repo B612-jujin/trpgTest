@@ -31,7 +31,7 @@ public class Exam03Controller {
 
             FlaskWebSocketClient3 client = new FlaskWebSocketClient3(uri, payload);
             client.connectBlocking();  // 동기 연결
-            Thread.sleep(1000); // 잠깐 대기
+
 
             String base64Audio = client.getAudioBase64();
             if (base64Audio == null) {
