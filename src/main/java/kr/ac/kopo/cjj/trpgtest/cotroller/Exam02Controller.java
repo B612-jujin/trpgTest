@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.ac.kopo.cjj.trpgtest.FlaskWebSocketClient;
 import kr.ac.kopo.cjj.trpgtest.FlaskWebSocketClient2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,7 +33,9 @@ public class Exam02Controller {
     }
 
     @PostMapping("/exam02")
-    public String handleSubmit(@RequestParam String type,@RequestParam String message,Model model) {
+    public String handleSubmit(@RequestParam String type,
+                               @RequestParam String message,
+                               Model model) {
         try {
             URI uri = new URI("ws://192.168.26.165:8000/ws");
 
@@ -43,6 +46,8 @@ public class Exam02Controller {
             logger.debug("WebSocket 연결을 시도합니다. URI: {}", uri);
 
             FlaskWebSocketClient2 client = new FlaskWebSocketClient2(uri, data, streamController);
+            client.connectBlocking();
+
             client.connectBlocking(); // connect() 대신
 
             String rawJson = client.getResponseFuture().get(50, TimeUnit.SECONDS);
@@ -51,14 +56,12 @@ public class Exam02Controller {
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(rawJson);
-
             String aiResponse = root.path("response").asText();
-            model.addAttribute("URI", uri.toString());
+
             model.addAttribute("type", type);
             model.addAttribute("message", message);
             model.addAttribute("response", aiResponse);
             model.addAttribute("rawJson", rawJson);
-
 
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
