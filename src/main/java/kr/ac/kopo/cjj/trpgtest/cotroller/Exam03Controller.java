@@ -14,12 +14,12 @@ import java.util.Map;
 @Controller
 public class Exam03Controller {
 
-    @GetMapping("/tts")
+    @GetMapping("/exam03")
     public String showForm() {
-        return "tts_form"; // templates/tts_form.html
+        return "exam03"; // templates/tts_form.html
     }
 
-    @PostMapping("/tts")
+    @PostMapping("/exam03")
     public String handleTtsRequest(@RequestParam String message, Model model) {
         try {
             URI uri = new URI("ws://localhost:8000/ws"); // Flask WebSocket 주소
