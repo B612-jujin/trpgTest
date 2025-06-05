@@ -1,26 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <title>TTS 데모</title>
     <meta charset="UTF-8">
-    <title>TTS WebSocket</title>
 </head>
 <body>
-<h1>텍스트 → 음성 (WebSocket)</h1>
-<form method="post" th:action="@{/exam03}">
-    <input type="text" name="message" required placeholder="텍스트 입력" />
-    <button type="submit">변환</button>
+<h1>TTS WebSocket 데모</h1>
+<form method="post" action="/exam03">
+    <label>텍스트 입력:</label><br>
+    <textarea name="text" rows="3" cols="60" required>사과하라고, 내가 후보에도 들지 못했던 녀석한테 머리를 숙일 거 같아?</textarea><br><br>
+    <button type="submit">보내기</button>
 </form>
-
-<div th:if="${audioData}">
-    <h2>생성된 음성</h2>
-    <audio controls>
-        <source th:src="'data:audio/wav;base64,' + ${audioData}" type="audio/wav" />
-        브라우저가 audio 태그를 지원하지 않습니다.
-    </audio>
-</div>
-
-<div th:if="${error}">
-    <p th:text="${error}" style="color:red;"></p>
+<hr>
+<div th:if="${recv_text}">
+    <b>받은 텍스트:</b>
+    <div th:text="${recv_text}"></div>
+    <b>프롬프트:</b>
+    <div th:text="${prompt}"></div>
+    <b>오디오 파일:</b>
+    <audio th:src="@{${audio_url}}" controls></audio>
 </div>
 </body>
 </html>
