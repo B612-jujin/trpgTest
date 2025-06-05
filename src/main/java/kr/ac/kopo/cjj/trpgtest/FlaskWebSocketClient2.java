@@ -81,6 +81,7 @@ public class FlaskWebSocketClient2 extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
+        super.close();
         if (!responseFuture.isDone()) {
             responseFuture.complete("연결 종료됨: " + reason);
         }

@@ -47,9 +47,6 @@ public class Exam02Controller {
 
             FlaskWebSocketClient2 client = new FlaskWebSocketClient2(uri, data, streamController);
             client.connectBlocking();
-
-            client.connectBlocking(); // connect() 대신
-
             String rawJson = client.getResponseFuture().get(50, TimeUnit.SECONDS);
             System.out.println("Flask 응답 JSON: " + rawJson);
             logger.info("Flask 응답 JSON: {}", rawJson);

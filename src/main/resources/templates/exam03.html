@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>음성 출력</title>
+</head>
+<body>
+<h1>생성된 음성</h1>
+
+<div th:if="${audioData}">
+    <audio controls>
+        <source th:src="'data:audio/mp3;base64,' + ${audioData}" type="audio/mp3" />
+        브라우저가 audio 태그를 지원하지 않습니다.
+    </audio>
+</div>
+
+<div th:if="${error}">
+    <p th:text="${error}" style="color: red;"></p>
+</div>
+</body>
+</html>
+
