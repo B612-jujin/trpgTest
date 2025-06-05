@@ -14,7 +14,7 @@
 <div th:if="${audioData}">
     <h2>생성된 음성</h2>
     <audio controls>
-        <source th:src="'data:audio/mp3;base64,' + ${audioData}" type="audio/mp3" />
+        <source th:src="'data:audio/wav;base64,' + ${audioData}" type="audio/wav" />
         브라우저가 audio 태그를 지원하지 않습니다.
     </audio>
 </div>
