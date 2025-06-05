@@ -2,10 +2,11 @@ package kr.ac.kopo.cjj.trpgtest;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FlaskWebSocketClient3 extends WebSocketClient {
 
@@ -25,7 +26,7 @@ public class FlaskWebSocketClient3 extends WebSocketClient {
             send(mapper.writeValueAsString(requestData));
         } catch (Exception e) {
             e.printStackTrace();
-            latch.countDown(); // 실패해도 대기 풀어줌
+            latch.countDown();
         }
     }
 
@@ -39,7 +40,7 @@ public class FlaskWebSocketClient3 extends WebSocketClient {
                 this.audioBase64 = (String) response.get("audio");
             }
 
-            latch.countDown();  // 응답 도착 시 대기 해제
+            latch.countDown();
         } catch (Exception e) {
             e.printStackTrace();
             latch.countDown();
@@ -47,7 +48,7 @@ public class FlaskWebSocketClient3 extends WebSocketClient {
     }
 
     public String getAudioBase64() throws InterruptedException {
-        latch.await();  // "응답이 올 때까지" 대기
+        latch.await();  // 응답이 올 때까지 대기
         return audioBase64;
     }
 

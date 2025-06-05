@@ -16,22 +16,25 @@ public class Exam03Controller {
 
     @GetMapping("/exam03")
     public String showForm() {
-        return "exam03"; // templates/tts_form.html
+        return "exam03";
     }
 
     @PostMapping("/exam03")
     public String handleTtsRequest(@RequestParam String message, Model model) {
         try {
-            URI uri = new URI("ws://192.168.26.165:8000/ws");
+            URI uri = new URI("ws://192.168.24.189:8000/ws");  // Flask WebSocket 주소
 
             Map<String, Object> payload = new HashMap<>();
             payload.put("type", "generate_tts");
             payload.put("message", message);
+            payload.put("text_lang", "ko");
             payload.put("media_type", "mp3");
+            payload.put("ref_audio_path", "A-A3-E-055-0101.wav");
+            payload.put("prompt_lang", "ko");
+            payload.put("prompt_text", "지금이 범인을 찾을 땐가요, 아버지라면 당연히 생사를 오가는 딸 곁에 있어 주셔야죠!");
 
             FlaskWebSocketClient3 client = new FlaskWebSocketClient3(uri, payload);
-            client.connectBlocking();  // 동기 연결
-
+            client.connectBlocking(); // 동기 연결
 
             String base64Audio = client.getAudioBase64();
             if (base64Audio == null) {
@@ -45,7 +48,6 @@ public class Exam03Controller {
             model.addAttribute("error", "TTS 처리 중 오류 발생: " + e.getMessage());
         }
 
-        return "exam03"; // 같은 페이지로 응답
+        return "exam03";
     }
 }
-
