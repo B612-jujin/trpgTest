@@ -21,7 +21,7 @@ public class Exam03Controller {
     public String handleTTS(@RequestParam String text, Model model) {
         try {
             Map<String, Object> data = new HashMap<>();
-            data.put("type", "tts_generated"); // 타입 명시 (구분용)
+            data.put("type", "generate_tts"); // 타입 명시 (구분용)
             data.put("text", text);
             data.put("text_lang", "ko");
             data.put("ref_audio_path", "A-A3-E-055-0101.wav");
