@@ -18,8 +18,9 @@ public class Exam03Controller {
     }
 
     @PostMapping("/exam03")
-    public String doTTS(@RequestParam String text, Model model) {
+    public String handleTTS(@RequestParam String text, Model model) {
         try {
+            // 1. JSON 데이터 준비
             Map<String, Object> data = new HashMap<>();
             data.put("text", text);
             data.put("text_lang", "ko");
@@ -31,13 +32,15 @@ public class Exam03Controller {
             ObjectMapper mapper = new ObjectMapper();
             String jsonPayload = mapper.writeValueAsString(data);
 
+            // 2. WebSocket으로 Flask에 전송
             URI uri = new URI("ws://localhost:8000/ws");
             MyWebSocketClient client = new MyWebSocketClient(uri, jsonPayload);
-            String resultJson = client.sendAndReceive().get(); // 블로킹
+            String responseJson = client.sendAndReceive().get(); // 동기(blocking)
 
-            // 결과를 맵으로 파싱
-            Map result = mapper.readValue(resultJson, Map.class);
+            // 3. JSON 응답 파싱
+            Map<String, Object> result = mapper.readValue(responseJson, Map.class);
 
+            // 4. 모델에 결과 추가 (HTML로 전달)
             model.addAttribute("recv_text", result.get("recv_text"));
             model.addAttribute("audio_url", result.get("audio_url"));
             model.addAttribute("prompt", result.get("prompt"));
