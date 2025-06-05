@@ -27,11 +27,11 @@ public class MyWebSocketClient extends WebSocketClient {
         try {
             ObjectMapper mapper = new ObjectMapper();
             Map result = mapper.readValue(message, Map.class);
-            if ("tts_generated".equals(result.get("type"))) {
-                future.complete(message); // 최종 결과만 반환
+            if ("success".equals(result.get("status"))) {
+                future.complete(message); // 오직 완성된 결과만!
                 this.close();
             }
-            // 진행중 메시지 등은 무시
+            // "processing" 등은 무시
         } catch (Exception e) {
             future.completeExceptionally(e);
             this.close();
