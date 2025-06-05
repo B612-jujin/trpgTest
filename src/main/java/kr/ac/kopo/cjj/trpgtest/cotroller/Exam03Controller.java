@@ -37,7 +37,11 @@ public class Exam03Controller {
             String resultJson = client.sendAndReceive().get(); // 최종 메시지 블로킹
 
             Map result = mapper.readValue(resultJson, Map.class);
-            model.addAttribute("audio", result.get("audio"));
+            String audioBase64 = (String)result.get("audio");
+            if (!audioBase64.startsWith("data:")) {
+                audioBase64 = "data:audio/wav;base64," + audioBase64;
+            }
+            model.addAttribute("audio", audioBase64);
             model.addAttribute("text", result.get("text"));
         } catch (Exception e) {
             model.addAttribute("text", "오류: " + e.getMessage());
