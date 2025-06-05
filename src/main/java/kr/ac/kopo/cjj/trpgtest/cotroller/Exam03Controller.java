@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-public class AudioController {
+public class Exam03Controller {
 
     @GetMapping("/exam01")
     public String getAudio(Model model) {
