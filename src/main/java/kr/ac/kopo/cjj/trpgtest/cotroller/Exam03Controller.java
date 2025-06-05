@@ -20,8 +20,8 @@ public class Exam03Controller {
     @PostMapping("/exam03")
     public String handleTTS(@RequestParam String text, Model model) {
         try {
-            // 1. JSON 데이터 준비
             Map<String, Object> data = new HashMap<>();
+            data.put("type", "tts_generated"); // 타입 명시 (구분용)
             data.put("text", text);
             data.put("text_lang", "ko");
             data.put("ref_audio_path", "A-A3-E-055-0101.wav");
@@ -32,20 +32,15 @@ public class Exam03Controller {
             ObjectMapper mapper = new ObjectMapper();
             String jsonPayload = mapper.writeValueAsString(data);
 
-            // 2. WebSocket으로 Flask에 전송
-            URI uri = new URI("ws://localhost:8000/ws");
+            URI uri = new URI("ws://192.168.26.165:8000/ws");
             MyWebSocketClient client = new MyWebSocketClient(uri, jsonPayload);
-            String responseJson = client.sendAndReceive().get(); // 동기(blocking)
+            String resultJson = client.sendAndReceive().get(); // 최종 메시지 블로킹
 
-            // 3. JSON 응답 파싱
-            Map<String, Object> result = mapper.readValue(responseJson, Map.class);
-
-            // 4. 모델에 결과 추가 (HTML로 전달)
-            model.addAttribute("recv_text", result.get("recv_text"));
-            model.addAttribute("audio_url", result.get("audio_url"));
-            model.addAttribute("prompt", result.get("prompt"));
+            Map result = mapper.readValue(resultJson, Map.class);
+            model.addAttribute("audio", result.get("audio"));
+            model.addAttribute("text", result.get("text"));
         } catch (Exception e) {
-            model.addAttribute("recv_text", "오류: " + e.getMessage());
+            model.addAttribute("text", "오류: " + e.getMessage());
         }
         return "exam03";
     }
