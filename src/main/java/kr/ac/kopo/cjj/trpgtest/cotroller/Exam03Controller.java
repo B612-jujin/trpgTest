@@ -26,9 +26,9 @@ public class Exam03Controller {
 
             Map<String, Object> payload = new HashMap<>();
             payload.put("type", "generate_tts");
-            payload.put("message", message);
+            payload.put("text", message);
             payload.put("text_lang", "ko");
-            payload.put("media_type", "mp3");
+            payload.put("media_type", "wav");
             payload.put("ref_audio_path", "A-A3-E-055-0101.wav");
             payload.put("prompt_lang", "ko");
             payload.put("prompt_text", "지금이 범인을 찾을 땐가요, 아버지라면 당연히 생사를 오가는 딸 곁에 있어 주셔야죠!");
