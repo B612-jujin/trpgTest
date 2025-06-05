@@ -22,7 +22,7 @@ public class Exam03Controller {
     @PostMapping("/exam03")
     public String handleTtsRequest(@RequestParam String message, Model model) {
         try {
-            URI uri = new URI("ws://localhost:8000/ws"); // Flask WebSocket 주소
+            URI uri = new URI("ws://192.168.26.165:8000/ws");
 
             Map<String, Object> payload = new HashMap<>();
             payload.put("type", "generate_tts");
