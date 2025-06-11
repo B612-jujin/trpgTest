@@ -3,7 +3,6 @@ package kr.ac.kopo.cjj.trpgtest.cotroller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ac.kopo.cjj.trpgtest.FlaskWebSocketClient;
-import kr.ac.kopo.cjj.trpgtest.FlaskWebSocketClient2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
