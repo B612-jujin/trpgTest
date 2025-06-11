@@ -8,9 +8,12 @@ const WebSocketClient = () => {
     const [responses, setResponses] = useState([]);
     const stompClient = useRef(null);
 
+
+
     useEffect(() => {
-        const socket = new SockJS('http://localhost:8081/ws');
+        const socket = new SockJS('http://192.168.26.165:8081/ws'); // 개발 중일 경우
         const client = new Client({ webSocketFactory: () => socket });
+
 
         client.onConnect = () => {
             console.log('Connected to Spring WebSocket');
