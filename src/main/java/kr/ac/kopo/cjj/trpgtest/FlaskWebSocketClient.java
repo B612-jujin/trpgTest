@@ -9,16 +9,19 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class FlaskWebSocketClient extends WebSocketClient {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final CompletableFuture<String> responseFuture = new CompletableFuture<>();
     private final Map<String, Object> sendData;
+    private final Consumer<String> messageCallback;
 
-    public FlaskWebSocketClient(URI serverUri, Map<String, Object> sendData) {
+    public FlaskWebSocketClient(URI serverUri, Map<String, Object> sendData, Consumer<String> messageCallback) {
         super(serverUri);
         this.sendData = sendData;
+        this.messageCallback = messageCallback;
     }
 
     public CompletableFuture<String> getResponseFuture() {
@@ -39,17 +42,14 @@ public class FlaskWebSocketClient extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         System.out.println("[📩 수신]: " + message);
+        if (messageCallback != null) {
+            messageCallback.accept(message);
+        }
         try {
             JsonNode root = objectMapper.readTree(message);
-
-            // 이미지가 포함된 응답만 처리
-            if (root.has("image")) {
+            if (root.has("image") || root.path("done").asBoolean(false)) {
                 responseFuture.complete(message);
-            } else {
-                // 중간 진행 메시지인 경우 무시하거나 로그만 출력
-                System.out.println("[ℹ️ 중간 메시지 수신]: " + root.toPrettyString());
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             responseFuture.completeExceptionally(e);
@@ -60,7 +60,7 @@ public class FlaskWebSocketClient extends WebSocketClient {
     public void onClose(int code, String reason, boolean remote) {
         System.out.println("[⚠️ 연결 종료]: " + reason);
         if (!responseFuture.isDone()) {
-            responseFuture.completeExceptionally(new RuntimeException("WebSocket closed before image received."));
+            responseFuture.completeExceptionally(new RuntimeException("WebSocket closed prematurely."));
         }
     }
 
