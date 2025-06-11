@@ -9,7 +9,7 @@ const WebSocketClient = () => {
     const stompClient = useRef(null);
 
     useEffect(() => {
-        const socket = new SockJS('http://localhost:8080/ws');
+        const socket = new SockJS('http://localhost:8081/ws');
         const client = new Client({ webSocketFactory: () => socket });
 
         client.onConnect = () => {
