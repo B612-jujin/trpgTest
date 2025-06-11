@@ -47,9 +47,14 @@ public class FlaskWebSocketClient extends WebSocketClient {
         }
         try {
             JsonNode root = objectMapper.readTree(message);
-            if (root.has("image") || root.path("done").asBoolean(false)) {
+
+            boolean isDone = root.has("done") && root.get("done").asBoolean();
+            boolean hasImage = root.has("image");
+
+            if (isDone || hasImage) {
                 responseFuture.complete(message);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             responseFuture.completeExceptionally(e);
