@@ -6,45 +6,26 @@ const WebSocketClient = () => {
     const [type, setType] = useState('chat');
     const [message, setMessage] = useState('');
     const [responses, setResponses] = useState([]);
+    const [connected, setConnected] = useState(false);
     const stompClient = useRef(null);
 
-
-
-
     useEffect(() => {
-        const socket = new SockJS('http://192.168.26.165:8081/ws'); // 개발 중일 경우
+        const socket = new SockJS('http://192.168.26.165:8081/ws');
         const client = new Client({ webSocketFactory: () => socket });
 
-        client.subscribe('/topic/relay', msg => {
-            try {
-                const data = JSON.parse(msg.body);
-                console.log('📥 Spring → React 응답 수신:', data);
-
-                if (data.done) {
-                    console.log('✅ 최종 응답 도착 (done: true)');
-                }
-
-                if (data.image) {
-                    console.log('🖼️ 이미지 포함 응답');
-                }
-
-                if (data.audio) {
-                    console.log('🔊 오디오 포함 응답');
-                }
-
-                setResponses(prev => [...prev, data]);
-            } catch (e) {
-                console.error('메시지 파싱 실패:', e);
-            }
-        });
-
-
-
         client.onConnect = () => {
-            console.log('Connected to Spring WebSocket');
+            console.log('✅ STOMP 연결 성공');
+            setConnected(true);
+
             client.subscribe('/topic/relay', msg => {
                 try {
                     const data = JSON.parse(msg.body);
+                    console.log('📥 응답 수신:', data);
+
+                    if (data.done) console.log('✅ 최종 응답 도착 (done: true)');
+                    if (data.image) console.log('🖼️ 이미지 포함 응답');
+                    if (data.audio) console.log('🔊 오디오 포함 응답');
+
                     setResponses(prev => [...prev, data]);
                 } catch (e) {
                     console.error('메시지 파싱 실패:', e);
@@ -55,7 +36,10 @@ const WebSocketClient = () => {
         client.activate();
         stompClient.current = client;
 
-        return () => client.deactivate();
+        return () => {
+            setConnected(false);
+            client.deactivate();
+        };
     }, []);
 
     const handleSend = () => {
@@ -74,7 +58,6 @@ const WebSocketClient = () => {
             console.warn('❌ STOMP 연결되지 않음. 잠시 후 다시 시도하세요.');
         }
     };
-
 
     return (
         <div style={{ padding: '1rem' }}>
@@ -103,7 +86,9 @@ const WebSocketClient = () => {
             </label>
 
             <br /><br />
-            <button onClick={handleSend}>전송</button>
+            <button onClick={handleSend} disabled={!connected}>
+                {connected ? '전송' : '연결 중...'}
+            </button>
 
             <h3>응답:</h3>
             <div style={{ background: '#f0f0f0', padding: '1rem' }}>
