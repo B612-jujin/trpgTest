@@ -60,10 +60,21 @@ const WebSocketClient = () => {
 
     const handleSend = () => {
         if (!type || !message) return;
+
         const payload = { type, message };
-        stompClient.current.publish({ destination: '/app/relay', body: JSON.stringify(payload) });
-        setResponses([]);
+
+        if (stompClient.current && stompClient.current.connected) {
+            console.log('🚀 React → Spring 전송:', payload);
+            stompClient.current.publish({
+                destination: '/app/relay',
+                body: JSON.stringify(payload)
+            });
+            setResponses([]);
+        } else {
+            console.warn('❌ STOMP 연결되지 않음. 잠시 후 다시 시도하세요.');
+        }
     };
+
 
     return (
         <div style={{ padding: '1rem' }}>
