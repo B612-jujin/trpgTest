@@ -50,10 +50,13 @@ public class FlaskWebSocketClient extends WebSocketClient {
 
             boolean isDone = root.has("done") && root.get("done").asBoolean();
             boolean hasImage = root.has("image");
-
-            if (isDone || hasImage) {
+            boolean hasAudio = root.has("audio");
+            if (isDone || hasImage || hasAudio) {
                 responseFuture.complete(message);
+                System.out.printf("[✅ 완료]: %s, 이미지: %b, 오디오: %b%n", isDone, hasImage, hasAudio);
             }
+
+
 
         } catch (Exception e) {
             e.printStackTrace();

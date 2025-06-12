@@ -8,16 +8,13 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 // WebSocketRelayController.java
 @Controller
-public class WebSocketRelayControllerImge {
+public class WebSocketRelayController {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
